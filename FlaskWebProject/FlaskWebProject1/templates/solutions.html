@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+<hr>
+<h3> Here is a solutions page  </h3>
+
+<a href="https://google.com"> Please click here:</a>
+
+</head>
+
+
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+
+
+
+<body>
+
+
+  <h1>{{form_start_date}}</h1>
+
+  <h2>{{form_end_date}}</h2>
+  
+
+  <form method="POST", action={{url_for("solutions")}}>
+    <div>
+      <label for="start_date">Start Date</label>
+      <input type="date" name="start_date" start_date= start_date id="start_date" min="2015-01-01" max="2021-12-30" >
+    </div>
+    <div>
+      <label for="end_date">End Date</label>
+      <input type="date" name="end_date" end_date=end_date id="end_date" min="2015-01-01" max="2021-12-30">
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+
+
+<h2>Sales Table</h2>
+<table border="1">
+    <thead>
+        <tr>
+            {% for col in colnames %}
+            <th>{{ col }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            {% for col in colnames %}
+            <td>{{ record[col] }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+{% endblock %}
