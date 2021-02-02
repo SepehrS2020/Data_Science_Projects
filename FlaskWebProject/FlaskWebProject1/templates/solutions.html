@@ -37,10 +37,6 @@ tr:nth-child(even) {
 <body>
 
 
-  <h1>{{form_start_date}}</h1>
-
-  <h2>{{form_end_date}}</h2>
-  
 
   <form method="POST", action={{url_for("solutions")}}>
     <div>
@@ -51,8 +47,17 @@ tr:nth-child(even) {
       <label for="end_date">End Date</label>
       <input type="date" name="end_date" end_date=end_date id="end_date" min="2015-01-01" max="2021-12-30">
     </div>
+    <input type="hidden" name="form_name" value="sales_table">
     <button type="submit">Submit</button>
   </form>
+
+<div>
+  <form method="POST", action={{url_for("solutions")}}>
+    <input type="hidden" name="form_name" value="save_data">
+    <button type="submit">Save Results</button>
+  </form>
+
+</div>
 
 
 <h2>Sales Table</h2>
