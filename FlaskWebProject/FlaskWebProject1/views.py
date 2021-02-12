@@ -10,6 +10,7 @@ import pandas as pd
 from dateutil.parser import parse
 import sqlite3
 import time
+import pyodbc
 
 
 
@@ -49,88 +50,24 @@ def about():
 def text():
     """Renders the text page."""
 
-    def create_database():
-        print('Establishing connection ...')
-        conn=sqlite3.connect('Flask_db.sqlite')
-        cur=conn.cursor()
-        print('Creating database ...')
-        cur.executescript(
-        '''
-        CREATE TABLE IF NOT EXISTS Comments (ID INTEGER PRIMARY KEY NOT NULL UNIQUE, comment TEXT, registered_date DATETIME)
-        '''
-        )
-        conn.close()
-
-
-
-    def import_to_database(form_text):
-        #text=text.strip()
-        reg_date=datetime.now().date()
-        print('Establishing connection ...')
-        conn=sqlite3.connect('Flask_db.sqlite')
-        cur=conn.cursor()
-
-        print('Checking for exsiting records in database...')
-        existed_recors=cur.execute(
-        '''
-        SELECT comment from Comments WHERE comment == ?
-
-        ''',(form_text,)
-        )
-        number_of_records=len(existed_recors.fetchall())
-        print("the number of similar existing records: ",number_of_records)
-
-        if number_of_records>0:
-            print('the comment is already existed in the database')
-            print('Updating database....')
-            reg_date=datetime.now().date()
-            cur.execute(
-                '''
-                UPDATE Comments
-                SET registered_date = ?
-                WHERE comment=?
-                ''',
-                (reg_date,form_text)
-                )
-            conn.commit()
-            print('the time of the comment updated to {}' .format(reg_date))
-            print('Commiting data into database...')
-
-
-        elif number_of_records==0:
-            print('Importing data into database ...')
-            cur.execute(
-                ''' INSERT INTO Comments (comment, registered_date) VALUES (?,?) ''',
-                (form_text, reg_date)
-                )
-            conn.commit()
-            print('Commiting data into database...')
-        else:
-            print("do nothing")
-            pass
-        conn.close()
-
     if request.method == "POST":
-        form_comment=request.form.get("comments")
+        form_comment = request.form.get("comments")
         form_comment=str(form_comment)
-        #form_comment='this1'
-        print(type(form_comment))
         print("the {} has been entered into the comment area" .format(form_comment))
-        create_database()
-        import_to_database(form_comment)
+        ###### MS SQL Server #####
+        from FlaskWebProject1.db_connection import sql_db
+        dbase=sql_db(form_comment)
+        dbase.import_into_db()
     else:
         pass
 
-
-
-    #forms=request.post('https://solutions')
     return render_template(
         'text.html',
         title='Text',
 
         year=datetime.now().year,
         message='Your text description page.'
-    )
+        )
 
 
 
@@ -149,6 +86,7 @@ def solutions():
      'object_sale_articlePriceTotal', 'caseMaterial', 'cycleTime']
     form_start_date='2020-01-01'
     form_end_date='2020-01-29'
+    data=[]
 
 
 
